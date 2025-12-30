@@ -10,7 +10,7 @@ const { t } = useI18n({
             copyright: "Copyright"
         },
         zh: {
-            copyright: "版权所有"
+            copyright: "Copyright"
         }
     }
 });

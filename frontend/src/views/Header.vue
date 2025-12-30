@@ -62,15 +62,15 @@ const { locale, t } = useI18n({
             ok: 'OK',
         },
         zh: {
-            title: 'Cloudflare 临时邮件',
-            dark: '暗色',
-            light: '亮色',
-            accessHeader: '访问密码',
-            accessTip: '请输入站点访问密码',
-            home: '主页',
-            menu: '菜单',
-            user: '用户',
-            ok: '确定',
+            title: 'Cloudflare Temp Email',
+            dark: 'Dark',
+            light: 'Light',
+            accessHeader: 'Access Password',
+            accessTip: 'Please enter the correct access password',
+            home: 'Home',
+            menu: 'Menu',
+            user: 'User',
+            ok: 'OK',
         }
     }
 });

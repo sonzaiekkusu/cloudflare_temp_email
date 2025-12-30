@@ -12,7 +12,7 @@ const { locale, t } = useI18n({
             refresh: 'Refresh'
         },
         zh: {
-            refresh: '刷新'
+            refresh: 'Refresh'
         }
     }
 });

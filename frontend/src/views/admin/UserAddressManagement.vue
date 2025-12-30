@@ -23,10 +23,10 @@ const { locale, t } = useI18n({
             send_count: 'Send Count',
         },
         zh: {
-            success: '成功',
-            name: '名称',
-            mail_count: '邮件数量',
-            send_count: '发送数量',
+            success: 'success',
+            name: 'Name',
+            mail_count: 'Mail Count',
+            send_count: 'Send Count',
         }
     }
 });

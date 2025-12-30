@@ -14,8 +14,8 @@ const { t } = useI18n({
             queryTip: 'Please input address to query, leave blank to query all',
         },
         zh: {
-            query: '查询',
-            queryTip: '请输入地址查询, 留空则查询所有',
+            query: 'Query',
+            queryTip: 'Please input address to query, leave blank to query all',
         }
     }
 });

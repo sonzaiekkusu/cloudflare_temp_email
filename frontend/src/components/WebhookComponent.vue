@@ -37,15 +37,15 @@ const { t } = useI18n({
             fillInDemoTip: 'Please modify the URL and other settings to your own',
         },
         zh: {
-            successTip: '成功',
-            test: '测试',
-            save: '保存',
-            notEnabled: 'Webhook 未开启，请联系管理员开启',
-            urlMissing: 'URL 不能为空',
-            enable: '启用',
-            messagePusherDemo: '填入MessagePusher示例',
-            messagePusherDoc: 'MessagePusher文档',
-            fillInDemoTip: '请修改URL和其他设置为您自己的配置',
+            successTip: 'Success',
+            test: 'Test',
+            save: 'Save',
+            notEnabled: 'Webhook is not enabled for you',
+            urlMissing: 'URL is required',
+            enable: 'Enable',
+            messagePusherDemo: 'Fill with Message Pusher Demo',
+            messagePusherDoc: 'Message Pusher Doc',
+            fillInDemoTip: 'Please modify the URL and other settings to your own',
         }
     }
 });

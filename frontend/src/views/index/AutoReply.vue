@@ -29,14 +29,14 @@ const { t } = useI18n({
             save: 'Save',
         },
         zh: {
-            success: '成功',
-            settings: '设置',
-            sourcePrefix: '来源邮件前缀',
-            name: '名称',
-            enableAutoReply: '启用自动回复',
-            subject: '主题',
-            autoReply: '自动回复',
-            save: '保存',
+            success: 'Success',
+            settings: 'Settings',
+            sourcePrefix: 'Source Mail Prefix',
+            name: 'Name',
+            enableAutoReply: 'Enable Auto Reply',
+            subject: 'Subject',
+            autoReply: 'Auto Reply',
+            save: 'Save',
         }
     }
 });

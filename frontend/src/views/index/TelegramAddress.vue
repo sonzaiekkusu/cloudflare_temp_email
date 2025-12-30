@@ -26,13 +26,13 @@ const { t } = useI18n({
             bindAddressSuccess: 'Bind Address Success',
         },
         zh: {
-            success: '成功',
-            address: '地址',
-            actions: '操作',
-            changeMailAddress: '切换邮箱地址',
-            unbindMailAddress: '解绑邮箱地址',
-            bind: '绑定',
-            bindAddressSuccess: '绑定地址成功',
+            success: 'success',
+            address: 'Address',
+            actions: 'Actions',
+            changeMailAddress: 'Change Mail Address',
+            unbindMailAddress: 'Unbind Mail Address',
+            bind: 'Bind',
+            bindAddressSuccess: 'Bind Address Success',
         }
     }
 });

@@ -24,15 +24,15 @@ const { t } = useI18n({
             linkWithAddressCredential: 'Open to auto login email link',
         },
         zh: {
-            address: '地址',
-            enablePrefix: '是否启用前缀',
-            creatNewEmail: '创建新邮箱',
-            fillInAllFields: '请填写完整信息',
-            successTip: '创建成功',
-            addressCredential: '邮箱地址凭证',
-            addressCredentialTip: '请复制邮箱地址凭证，你可以使用它登录你的邮箱。',
-            addressPassword: '地址密码',
-            linkWithAddressCredential: '打开即可自动登录邮箱的链接',
+            address: 'Address',
+            enablePrefix: 'If enable Prefix',
+            creatNewEmail: 'Create New Email',
+            fillInAllFields: 'Please fill in all fields',
+            successTip: 'Success Created',
+            addressCredential: 'Mail Address Credential',
+            addressCredentialTip: 'Please copy the Mail Address Credential and you can use it to login to your email account.',
+            addressPassword: 'Address Password',
+            linkWithAddressCredential: 'Open to auto login email link',
         }
     }
 });
