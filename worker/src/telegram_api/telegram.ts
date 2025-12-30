@@ -1,4 +1,3 @@
-
 import { Context } from "hono";
 import { Telegraf, Context as TgContext, Markup } from "telegraf";
 import { callbackQuery } from "telegraf/filters";
@@ -14,35 +13,35 @@ import { UserFromGetMe } from "telegraf/types";
 const COMMANDS = [
     {
         command: "start",
-        description: "开始使用"
+        description: "Start using"
     },
     {
         command: "new",
-        description: "新建邮箱地址, 如果要自定义邮箱地址, 请输入 /new, 通过 /new <name>@<domain> 可以指定, name [a-z0-9] 有效, name 为空则随机生成, @<domain> 可选"
+        description: "Create new email address. Use /new <name>@<domain> to customize. Name [a-z0-9] allowed. Random if empty. @<domain> is optional."
     },
     {
         command: "address",
-        description: "查看邮箱地址列表"
+        description: "View email address list"
     },
     {
         command: "bind",
-        description: "绑定邮箱地址, 请输入 /bind <邮箱地址凭证>"
+        description: "Bind email address, please enter /bind <credential>"
     },
     {
         command: "unbind",
-        description: "解绑邮箱地址, 请输入 /unbind <邮箱地址>"
+        description: "Unbind email address, please enter /unbind <email_address>"
     },
     {
         command: "delete",
-        description: "删除邮箱地址, 请输入 /delete <邮箱地址>"
+        description: "Delete email address, please enter /delete <email_address>"
     },
     {
         command: "mails",
-        description: "查看邮件, 请输入 /mails <邮箱地址>, 不输入地址默认查看第一个地址"
+        description: "View emails, please enter /mails <email_address>. View the first address if empty."
     },
     {
         command: "cleaninvalidaddress",
-        description: "清理无效地址, 请输入 /cleaninvalidaddress"
+        description: "Clean invalid addresses, please enter /cleaninvalidaddress"
     },
 ]
 
@@ -61,14 +60,14 @@ export function newTelegramBot(c: Context<HonoCustomType>, token: string): Teleg
 
         const userId = ctx?.message?.from?.id || ctx.callbackQuery?.message?.chat?.id;
         if (!userId) {
-            return await ctx.reply("无法获取用户信息");
+            return await ctx.reply("Unable to retrieve user information");
         }
 
         const settings = await c.env.KV.get<TelegramSettings>(CONSTANTS.TG_KV_SETTINGS_KEY, "json");
         if (settings?.enableAllowList && settings?.enableAllowList
             && !settings.allowList.includes(userId.toString())
         ) {
-            return await ctx.reply("您没有权限使用此机器人");
+            return await ctx.reply("You do not have permission to use this bot");
         }
         try {
             await next();
@@ -82,10 +81,10 @@ export function newTelegramBot(c: Context<HonoCustomType>, token: string): Teleg
         const prefix = getStringValue(c.env.PREFIX)
         const domains = getDomains(c);
         return await ctx.reply(
-            "欢迎使用本机器人, 您可以打开 mini app \n\n"
-            + (prefix ? `当前已启用前缀: ${prefix}\n` : '')
-            + `当前可用域名: ${JSON.stringify(domains)}\n`
-            + "请使用以下命令:\n"
+            "Welcome to the bot. You can open the mini app \n\n"
+            + (prefix ? `Current prefix enabled: ${prefix}\n` : '')
+            + `Current available domains: ${JSON.stringify(domains)}\n`
+            + "Please use the following commands:\n"
             + COMMANDS.map(c => `/${c.command}: ${c.description}`).join("\n")
         );
     });
@@ -93,104 +92,104 @@ export function newTelegramBot(c: Context<HonoCustomType>, token: string): Teleg
     bot.command("new", async (ctx: TgContext) => {
         const userId = ctx?.message?.from?.id;
         if (!userId) {
-            return await ctx.reply("无法获取用户信息");
+            return await ctx.reply("Unable to retrieve user information");
         }
         try {
             // @ts-ignore
             const address = ctx?.message?.text.slice("/new".length).trim();
             const res = await tgUserNewAddress(c, userId.toString(), address);
-            return await ctx.reply(`创建地址成功:\n`
-                + `地址: ${res.address}\n`
-                + (res.password ? `密码: \`${res.password}\`\n` : '')
-                + `凭证: \`${res.jwt}\`\n`,
+            return await ctx.reply(`Address created successfully:\n`
+                + `Address: ${res.address}\n`
+                + (res.password ? `Password: \`${res.password}\`\n` : '')
+                + `Credential: \`${res.jwt}\`\n`,
                 {
                     parse_mode: "Markdown"
                 }
             );
         } catch (e) {
-            return await ctx.reply(`创建地址失败: ${(e as Error).message}`);
+            return await ctx.reply(`Failed to create address: ${(e as Error).message}`);
         }
     });
 
     bot.command("bind", async (ctx: TgContext) => {
         const userId = ctx?.message?.from?.id;
         if (!userId) {
-            return await ctx.reply("无法获取用户信息");
+            return await ctx.reply("Unable to retrieve user information");
         }
         try {
             // @ts-ignore
             const jwt = ctx?.message?.text.slice("/bind".length).trim();
             if (!jwt) {
-                return await ctx.reply("请输入凭证");
+                return await ctx.reply("Please enter the credential");
             }
             const address = await bindTelegramAddress(c, userId.toString(), jwt);
-            return await ctx.reply(`绑定成功:\n`
-                + `地址: ${address}`
+            return await ctx.reply(`Binding successful:\n`
+                + `Address: ${address}`
             );
         }
         catch (e) {
-            return await ctx.reply(`绑定失败: ${(e as Error).message}`);
+            return await ctx.reply(`Binding failed: ${(e as Error).message}`);
         }
     });
 
     bot.command("unbind", async (ctx: TgContext) => {
         const userId = ctx?.message?.from?.id;
         if (!userId) {
-            return await ctx.reply("无法获取用户信息");
+            return await ctx.reply("Unable to retrieve user information");
         }
         try {
             // @ts-ignore
             const address = ctx?.message?.text.slice("/unbind".length).trim();
             if (!address) {
-                return await ctx.reply("请输入地址");
+                return await ctx.reply("Please enter the address");
             }
             await unbindTelegramAddress(c, userId.toString(), address);
-            return await ctx.reply(`解绑成功:\n地址: ${address}`
+            return await ctx.reply(`Unbinding successful:\nAddress: ${address}`
             );
         }
         catch (e) {
-            return await ctx.reply(`解绑失败: ${(e as Error).message}`);
+            return await ctx.reply(`Unbinding failed: ${(e as Error).message}`);
         }
     })
 
     bot.command("delete", async (ctx: TgContext) => {
         const userId = ctx?.message?.from?.id;
         if (!userId) {
-            return await ctx.reply("无法获取用户信息");
+            return await ctx.reply("Unable to retrieve user information");
         }
         try {
             // @ts-ignore
             const address = ctx?.message?.text.slice("/delete".length).trim();
             if (!address) {
-                return await ctx.reply("请输入地址");
+                return await ctx.reply("Please enter the address");
             }
             await deleteTelegramAddress(c, userId.toString(), address);
-            return await ctx.reply(`删除成功: ${address}`);
+            return await ctx.reply(`Delete successful: ${address}`);
         } catch (e) {
-            return await ctx.reply(`删除失败: ${(e as Error).message}`);
+            return await ctx.reply(`Delete failed: ${(e as Error).message}`);
         }
     });
 
     bot.command("address", async (ctx) => {
         const userId = ctx?.message?.from?.id;
         if (!userId) {
-            return await ctx.reply("无法获取用户信息");
+            return await ctx.reply("Unable to retrieve user information");
         }
         try {
             const jwtList = await c.env.KV.get<string[]>(`${CONSTANTS.TG_KV_PREFIX}:${userId}`, 'json') || [];
             const { addressList } = await jwtListToAddressData(c, jwtList);
-            return await ctx.reply(`地址列表:\n\n`
-                + addressList.map(a => `地址: ${a}`).join("\n")
+            return await ctx.reply(`Address list:\n\n`
+                + addressList.map(a => `Address: ${a}`).join("\n")
             );
         } catch (e) {
-            return await ctx.reply(`获取地址列表失败: ${(e as Error).message}`);
+            return await ctx.reply(`Failed to get address list: ${(e as Error).message}`);
         }
     });
 
     bot.command("cleaninvalidaddress", async (ctx: TgContext) => {
         const userId = ctx?.message?.from?.id;
         if (!userId) {
-            return await ctx.reply("无法获取用户信息");
+            return await ctx.reply("Unable to retrieve user information");
         }
         try {
             const jwtList = await c.env.KV.get<string[]>(`${CONSTANTS.TG_KV_PREFIX}:${userId}`, 'json') || [];
@@ -198,19 +197,19 @@ export function newTelegramBot(c: Context<HonoCustomType>, token: string): Teleg
             const newJwtList = jwtList.filter(jwt => !invalidJwtList.includes(jwt));
             await c.env.KV.put(`${CONSTANTS.TG_KV_PREFIX}:${userId}`, JSON.stringify(newJwtList));
             const { addressList } = await jwtListToAddressData(c, newJwtList);
-            return await ctx.reply(`清理无效地址成功:\n\n`
-                + `当前地址列表:\n\n`
-                + addressList.map(a => `地址: ${a}`).join("\n")
+            return await ctx.reply(`Invalid addresses cleaned successfully:\n\n`
+                + `Current address list:\n\n`
+                + addressList.map(a => `Address: ${a}`).join("\n")
             );
         } catch (e) {
-            return await ctx.reply(`清理无效地址失败: ${(e as Error).message}`);
+            return await ctx.reply(`Failed to clean invalid addresses: ${(e as Error).message}`);
         }
     });
 
     const queryMail = async (ctx: TgContext, queryAddress: string, mailIndex: number, edit: boolean) => {
         const userId = ctx?.message?.from?.id || ctx.callbackQuery?.message?.chat?.id;
         if (!userId) {
-            return await ctx.reply("无法获取用户信息");
+            return await ctx.reply("Unable to retrieve user information");
         }
         const jwtList = await c.env.KV.get<string[]>(`${CONSTANTS.TG_KV_PREFIX}:${userId}`, 'json') || [];
         const { addressList, addressIdMap } = await jwtListToAddressData(c, jwtList);
@@ -218,14 +217,14 @@ export function newTelegramBot(c: Context<HonoCustomType>, token: string): Teleg
             queryAddress = addressList[0];
         }
         if (!(queryAddress in addressIdMap)) {
-            return await ctx.reply(`未绑定此地址 ${queryAddress}`);
+            return await ctx.reply(`This address is not bound: ${queryAddress}`);
         }
         const address_id = addressIdMap[queryAddress];
         const db_address_id = await c.env.DB.prepare(
             `SELECT id FROM address where id = ? `
         ).bind(address_id).first("id");
         if (!db_address_id) {
-            return await ctx.reply("无效地址");
+            return await ctx.reply("Invalid address");
         }
         const { raw, id: mailId, created_at } = await c.env.DB.prepare(
             `SELECT * FROM raw_mails where address = ? `
@@ -233,32 +232,32 @@ export function newTelegramBot(c: Context<HonoCustomType>, token: string): Teleg
         ).bind(
             queryAddress, mailIndex
         ).first<{ raw: string, id: string, created_at: string }>() || {};
-        const { mail } = raw ? await parseMail({ rawEmail: raw }, queryAddress, created_at) : { mail: "已经没有邮件了" };
+        const { mail } = raw ? await parseMail({ rawEmail: raw }, queryAddress, created_at) : { mail: "No more emails" };
         const settings = await c.env.KV.get<TelegramSettings>(CONSTANTS.TG_KV_SETTINGS_KEY, "json");
         const miniAppButtons = []
         if (settings?.miniAppUrl && settings?.miniAppUrl?.length > 0 && mailId) {
             const url = new URL(settings.miniAppUrl);
             url.pathname = "/telegram_mail"
             url.searchParams.set("mail_id", mailId);
-            miniAppButtons.push(Markup.button.webApp("查看邮件", url.toString()));
+            miniAppButtons.push(Markup.button.webApp("View Email", url.toString()));
         }
         if (edit) {
-            return await ctx.editMessageText(mail || "无邮件",
+            return await ctx.editMessageText(mail || "No emails",
                 {
                     ...Markup.inlineKeyboard([
-                        Markup.button.callback("上一条", `mail_${queryAddress}_${mailIndex - 1}`, mailIndex <= 0),
+                        Markup.button.callback("Previous", `mail_${queryAddress}_${mailIndex - 1}`, mailIndex <= 0),
                         ...miniAppButtons,
-                        Markup.button.callback("下一条", `mail_${queryAddress}_${mailIndex + 1}`, !raw),
+                        Markup.button.callback("Next", `mail_${queryAddress}_${mailIndex + 1}`, !raw),
                     ])
                 },
             );
         }
-        return await ctx.reply(mail || "无邮件",
+        return await ctx.reply(mail || "No emails",
             {
                 ...Markup.inlineKeyboard([
-                    Markup.button.callback("上一条", `mail_${queryAddress}_${mailIndex - 1}`, mailIndex <= 0),
+                    Markup.button.callback("Previous", `mail_${queryAddress}_${mailIndex - 1}`, mailIndex <= 0),
                     ...miniAppButtons,
-                    Markup.button.callback("下一条", `mail_${queryAddress}_${mailIndex + 1}`, !raw),
+                    Markup.button.callback("Next", `mail_${queryAddress}_${mailIndex + 1}`, !raw),
                 ])
             },
         );
@@ -269,7 +268,7 @@ export function newTelegramBot(c: Context<HonoCustomType>, token: string): Teleg
             const queryAddress = ctx?.message?.text.slice("/mails".length).trim();
             return await queryMail(ctx, queryAddress, 0, false);
         } catch (e) {
-            return await ctx.reply(`获取邮件失败: ${(e as Error).message}`);
+            return await ctx.reply(`Failed to get emails: ${(e as Error).message}`);
         }
     });
 
@@ -283,8 +282,8 @@ export function newTelegramBot(c: Context<HonoCustomType>, token: string): Teleg
             }
         }
         catch (e) {
-            console.log(`获取邮件失败: ${(e as Error).message}`, e);
-            return await ctx.answerCbQuery(`获取邮件失败: ${(e as Error).message}`);
+            console.log(`Failed to get emails: ${(e as Error).message}`, e);
+            return await ctx.answerCbQuery(`Failed to get emails: ${(e as Error).message}`);
         }
         await ctx.answerCbQuery();
     });
@@ -308,20 +307,20 @@ const parseMail = async (
         const parsedEmail = await commonParseMail(parsedEmailContext);
         let parsedText = parsedEmail?.text || "";
         if (parsedText.length && parsedText.length > 1000) {
-            parsedText = parsedEmail?.text.substring(0, 1000) + "\n\n...\n消息过长请到miniapp查看";
+            parsedText = parsedEmail?.text.substring(0, 1000) + "\n\n...\nMessage too long, please view in mini app";
         }
         return {
             isHtml: false,
-            mail: `From: ${parsedEmail?.sender || "无发件人"}\n`
+            mail: `From: ${parsedEmail?.sender || "No Sender"}\n`
                 + `To: ${address}\n`
                 + (created_at ? `Date: ${created_at}\n` : "")
                 + `Subject: ${parsedEmail?.subject}\n`
-                + `Content:\n${parsedText || "解析失败，请打开 mini app 查看"}`
+                + `Content:\n${parsedText || "Parsing failed, please view in mini app"}`
         };
     } catch (e) {
         return {
             isHtml: false,
-            mail: `解析邮件失败: ${(e as Error).message}`
+            mail: `Failed to parse email: ${(e as Error).message}`
         };
     }
 }
@@ -354,7 +353,7 @@ export async function sendMailToTelegram(
         const url = new URL(settings.miniAppUrl);
         url.pathname = "/telegram_mail"
         url.searchParams.set("mail_id", mailId);
-        miniAppButtons.push(Markup.button.webApp("查看邮件", url.toString()));
+        miniAppButtons.push(Markup.button.webApp("View Email", url.toString()));
     }
     if (globalPush) {
         for (const pushId of settings.globalMailPushList) {
