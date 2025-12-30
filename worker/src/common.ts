@@ -420,7 +420,7 @@ export const commonParseMail = async (parsedEmailContext: ParsedEmailContext): P
     headers?: Record<string, string>[]
 } | undefined> => {
     // check parsed email context is valid
-    if (!parsedEmailContext || !parsedEmailContext.rawEmail) {
+	if (!parsedEmailContext || !parsedEmailContext.rawEmail) {
         return undefined;
     }
     // return parsed email if already parsed
@@ -429,23 +429,23 @@ export const commonParseMail = async (parsedEmailContext: ParsedEmailContext): P
     }
     const raw_mail = parsedEmailContext.rawEmail;
     // TODO: WASM parse email
-    // try {
-    //     const { parse_message_wrapper } = await import('mail-parser-wasm-worker');
+    try {
+        const { parse_message_wrapper } = await import('mail-parser-wasm-worker');
 
-    //     const parsedEmail = parse_message_wrapper(raw_mail);
-    //     parsedEmailContext.parsedEmail = {
-    //         sender: parsedEmail.sender || "",
-    //         subject: parsedEmail.subject || "",
-    //         text: parsedEmail.text || "",
-    //         headers: parsedEmail.headers?.map(
-    //             (header) => ({ key: header.key, value: header.value })
-    //         ) || [],
-    //         html: parsedEmail.body_html || "",
-    //     };
-    //     return parsedEmailContext.parsedEmail;
-    // } catch (e) {
-    //     console.error("Failed use mail-parser-wasm-worker to parse email", e);
-    // }
+        const parsedEmail = parse_message_wrapper(raw_mail);
+        parsedEmailContext.parsedEmail = {
+            sender: parsedEmail.sender || "",
+            subject: parsedEmail.subject || "",
+            text: parsedEmail.text || "",
+            headers: parsedEmail.headers?.map(
+                 (header) => ({ key: header.key, value: header.value })
+            ) || [],
+            html: parsedEmail.body_html || "",
+        };
+        return parsedEmailContext.parsedEmail;
+    } catch (e) {
+        console.error("Failed use mail-parser-wasm-worker to parse email", e);
+    }
     try {
         const { default: PostalMime } = await import('postal-mime');
         const parsedEmail = await PostalMime.parse(raw_mail);
