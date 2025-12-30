@@ -60,16 +60,16 @@ const { t } = useI18n({
       unselectAll: 'Unselect All',
     },
     zh: {
-      success: 'Success',
-      refresh: 'Refresh',
-      showCode: 'Change View Original Code',
-      pleaseSelectMail: "Please select a mail to view.",
-      delete: 'Delete',
-      deleteMailTip: 'Are you sure you want to delete mail?',
-      multiAction: 'Multi Action',
-      cancelMultiAction: 'Cancel Multi Action',
-      selectAll: 'Select All of This Page',
-      unselectAll: 'Unselect All',
+      success: '成功',
+      refresh: '刷新',
+      showCode: '切换查看元数据',
+      pleaseSelectMail: "请选择一封邮件查看。",
+      delete: '删除',
+      deleteMailTip: '确定要删除邮件吗?',
+      multiAction: '多选',
+      cancelMultiAction: '取消多选',
+      selectAll: '全选本页',
+      unselectAll: '取消全选',
     }
   }
 });

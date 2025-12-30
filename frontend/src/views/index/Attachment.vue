@@ -17,11 +17,11 @@ const { t } = useI18n({
             deleteSuccess: 'Deleted successfully',
         },
         zh: {
-            download: 'Download',
-            action: 'Action',
-            delete: 'Delete',
-            deleteConfirm: 'Are you sure to delete this attachment?',
-            deleteSuccess: 'Deleted successfully',
+            download: '下载',
+            action: '操作',
+            delete: '删除',
+            deleteConfirm: '确定要删除此附件吗？',
+            deleteSuccess: '删除成功',
         }
     }
 });

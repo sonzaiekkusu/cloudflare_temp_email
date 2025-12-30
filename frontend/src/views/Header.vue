@@ -41,7 +41,7 @@ const authFunc = async () => {
 }
 
 const changeLocale = async (lang) => {
-    if (lang == 'en') {
+    if (lang == 'zh') {
         await router.push(route.fullPath.replace('/en', ''));
     } else {
         await router.push(`/${lang}${route.fullPath}`);
@@ -62,15 +62,15 @@ const { locale, t } = useI18n({
             ok: 'OK',
         },
         zh: {
-            title: 'Cloudflare Temp Email',
-            dark: 'Dark',
-            light: 'Light',
-            accessHeader: 'Access Password',
-            accessTip: 'Please enter the correct access password',
-            home: 'Home',
-            menu: 'Menu',
-            user: 'User',
-            ok: 'OK',
+            title: 'Cloudflare 临时邮件',
+            dark: '暗色',
+            light: '亮色',
+            accessHeader: '访问密码',
+            accessTip: '请输入站点访问密码',
+            home: '主页',
+            menu: '菜单',
+            user: '用户',
+            ok: '确定',
         }
     }
 });
@@ -166,12 +166,12 @@ const menuOptions = computed(() => [
                 size: "small",
                 style: "width: 100%",
                 onClick: async () => {
-                    locale.value == 'en' ? await changeLocale('en') : await changeLocale('en');
+                    locale.value == 'zh' ? await changeLocale('en') : await changeLocale('zh');
                     showMobileMenu.value = false;
                 }
             },
             {
-                default: () => locale.value == 'en' ? "English" : "English",
+                default: () => locale.value == 'zh' ? "English" : "中文",
                 icon: () => h(
                     NIcon, { component: Language }
                 )

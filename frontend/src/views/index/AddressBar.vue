@@ -38,17 +38,17 @@ const { locale, t } = useI18n({
             userLogin: 'User Login',
         },
         zh: {
-            addressManage: 'Address Manage',
-            changeAddress: 'Change Address',
-            ok: 'OK',
-            copy: 'Copy',
-            copied: 'Copied',
-            fetchAddressError: 'Mail address credential is invalid or account not exist, it may be network connection issue, please try again later.',
-            addressCredential: 'Mail Address Credential',
-            linkWithAddressCredential: 'Open to auto login email link',
-            addressCredentialTip: 'Please copy the Mail Address Credential and you can use it to login to your email account.',
-            addressPassword: 'Address Password',
-            userLogin: 'User Login',
+            addressManage: '地址管理',
+            changeAddress: '更换地址',
+            ok: '确定',
+            copy: '复制',
+            copied: '已复制',
+            fetchAddressError: '邮箱地址凭证无效或邮箱地址不存在，也可能是网络连接异常，请稍后再尝试。',
+            addressCredential: '邮箱地址凭证',
+            linkWithAddressCredential: '打开即可自动登录邮箱的链接',
+            addressCredentialTip: '请复制邮箱地址凭证，你可以使用它登录你的邮箱。',
+            addressPassword: '地址密码',
+            userLogin: '用户登录',
         }
     }
 });

@@ -9,7 +9,7 @@ const { t } = useI18n({
             adminContact: 'If you need help, please contact the administrator ({msg})',
         },
         zh: {
-            adminContact: 'If you need help, please contact the administrator ({msg})',
+            adminContact: '如果你需要帮助，请联系管理员 ({msg})',
         }
     }
 });

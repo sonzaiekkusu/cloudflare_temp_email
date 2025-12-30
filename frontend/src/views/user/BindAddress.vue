@@ -14,7 +14,7 @@ const { t } = useI18n({
             logout: 'Logout',
         },
         zh: {
-            logout: 'Logout',
+            logout: '退出登录',
         }
     }
 });

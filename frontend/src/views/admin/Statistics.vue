@@ -19,12 +19,12 @@ const { t } = useI18n({
             sendMailCount: 'Send Mail Count'
         },
         zh: {
-            userCount: 'User Count',
-            addressCount: 'Address Count',
-            activeAddressCount7days: '7 days Active Address Count',
-            activeAddressCount30days: '30 days Active Address Count',
-            mailCount: 'Mail Count',
-            sendMailCount: 'Send Mail Count'
+            userCount: '用户总数',
+            addressCount: '邮箱地址总数',
+            activeAddressCount7days: '7天活跃邮箱地址总数',
+            activeAddressCount30days: '30天活跃邮箱地址总数',
+            mailCount: '邮件总数',
+            sendMailCount: '发送邮件总数'
         }
     }
 });
