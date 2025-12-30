@@ -42,7 +42,7 @@ const authFunc = async () => {
 
 const changeLocale = async (lang) => {
     if (lang == 'en') {
-        await router.push(route.fullPath.replace('/zh', ''));
+        await router.push(route.fullPath.replace('/en', ''));
     } else {
         await router.push(`/${lang}${route.fullPath}`);
     }
@@ -166,12 +166,12 @@ const menuOptions = computed(() => [
                 size: "small",
                 style: "width: 100%",
                 onClick: async () => {
-                    locale.value == 'zh' ? await changeLocale('en') : await changeLocale('zh');
+                    locale.value == 'en' ? await changeLocale('en') : await changeLocale('en');
                     showMobileMenu.value = false;
                 }
             },
             {
-                default: () => locale.value == 'zh' ? "English" : "中文",
+                default: () => locale.value == 'en' ? "English" : "English",
                 icon: () => h(
                     NIcon, { component: Language }
                 )

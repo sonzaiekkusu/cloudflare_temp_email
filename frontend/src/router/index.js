@@ -48,7 +48,7 @@ router.beforeEach((to, from, next) => {
     if (to.params.lang && ['en', 'zh'].includes(to.params.lang)) {
         i18n.global.locale.value = to.params.lang
     } else {
-        i18n.global.locale.value = 'zh'
+        i18n.global.locale.value = 'en'
     }
     // check if query parameter has jwt, set it to store
     if (to.query.jwt) {
