@@ -41,8 +41,8 @@ const authFunc = async () => {
 }
 
 const changeLocale = async (lang) => {
-    if (lang == 'zh') {
-        await router.push(route.fullPath.replace('/en', ''));
+    if (lang == 'en') {
+        await router.push(route.fullPath.replace('/zh', ''));
     } else {
         await router.push(`/${lang}${route.fullPath}`);
     }
