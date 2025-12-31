@@ -30,6 +30,7 @@
     "postal-mime": "^2.6.1",
     "resend": "^6.6.0",
     "otpauth": "9.4.1",
+    "@faker-js/faker": "10.1.0",
     "telegraf": "4.16.3",
     "worker-mailer": "^1.2.1"
   },

@@ -1,7 +1,17 @@
 import { Context } from "hono";
 import { Telegraf, Context as TgContext, Markup } from "telegraf";
 import { callbackQuery } from "telegraf/filters";
-import * as OTPAuth from "otpauth"; // Pastikan library ini sudah terinstall
+import * as OTPAuth from "otpauth"; 
+
+// --- IMPORT FAKER (ASIA & EROPA) ---
+import { 
+    type Faker,
+    fakerEN_US, // Default (US)
+    // Asia
+    fakerID_ID, fakerJA, fakerKO, fakerZH_CN, fakerZH_TW, fakerVI, fakerTH, fakerEN_IN, fakerNE, fakerTR,
+    // Eropa
+    fakerEN_GB, fakerFR, fakerDE, fakerIT, fakerES, fakerRU, fakerUK, fakerPL, fakerNL, fakerPT_PT, fakerSV, fakerFI, fakerCS_CZ
+} from '@faker-js/faker';
 
 import { CONSTANTS } from "../constants";
 import { getBooleanValue, getDomains, getJsonObjectValue, getStringValue } from '../utils';
@@ -33,42 +43,16 @@ const getTgMessages = async (
 
 // Bilingual command descriptions with full usage instructions
 const COMMANDS = [
-    {
-        command: "start",
-        description: "Get started"
-    },
-    {
-        command: "new",
-        description: "Create address, /new <name>@<domain>, name[a-z0-9] valid, empty=random, @domain optional"
-    },
-    {
-        command: "address",
-        description: "View address list"
-    },
-    {
-        command: "bind",
-        description: "Bind address, /bind <credential>"
-    },
-    {
-        command: "unbind",
-        description: "Unbind address, /unbind <address>"
-    },
-    {
-        command: "delete",
-        description: "Delete address, /delete <address>"
-    },
-    {
-        command: "mails",
-        description: "View mails, /mails <address>, default first if empty"
-    },
-    {
-        command: "cleaninvalidaddress",
-        description: "Clean invalid addresses"
-    },
-    {
-        command: "lang",
-        description: "Set language"
-    },
+    { command: "start", description: "Get started" },
+    { command: "new", description: "Create address, /new <name>@<domain>" },
+    { command: "address", description: "View address list" },
+    { command: "bind", description: "Bind address, /bind <credential>" },
+    { command: "unbind", description: "Unbind address, /unbind <address>" },
+    { command: "delete", description: "Delete address, /delete <address>" },
+    { command: "mails", description: "View mails, /mails <address>" },
+    { command: "cleaninvalidaddress", description: "Clean invalid addresses" },
+    { command: "lang", description: "Set language" },
+    { command: "fake", description: "Generate Fake ID (e.g. /fake id, /fake us)" }, // <-- FITUR FAKE ID
 ]
 
 export const getTelegramCommands = (c: Context<HonoCustomType>) => {
@@ -278,6 +262,92 @@ export function newTelegramBot(c: Context<HonoCustomType>, token: string): Teleg
         );
     });
 
+    // --- FITUR BARU: GENERATE FAKE IDENTITY (DENGAN LOCALE) ---
+    bot.command("fake", async (ctx) => {
+        // Daftar negara yang didukung (Asia & Eropa)
+        const supportedLocales: Record<string, { faker: Faker, name: string }> = {
+            // Default / Amerika
+            'us': { faker: fakerEN_US, name: 'United States' },
+            'usa': { faker: fakerEN_US, name: 'United States' },
+
+            // --- ASIA ---
+            'id': { faker: fakerID_ID, name: 'Indonesia' },
+            'jp': { faker: fakerJA, name: 'Japan' },
+            'kr': { faker: fakerKO, name: 'South Korea' },
+            'cn': { faker: fakerZH_CN, name: 'China' },
+            'tw': { faker: fakerZH_TW, name: 'Taiwan' },
+            'vn': { faker: fakerVI, name: 'Vietnam' },
+            'th': { faker: fakerTH, name: 'Thailand' },
+            'in': { faker: fakerEN_IN, name: 'India' },
+            'np': { faker: fakerNE, name: 'Nepal' },
+            'tr': { faker: fakerTR, name: 'Turkey' },
+
+            // --- EROPA ---
+            'uk': { faker: fakerEN_GB, name: 'United Kingdom' },
+            'gb': { faker: fakerEN_GB, name: 'United Kingdom' },
+            'fr': { faker: fakerFR, name: 'France' },
+            'de': { faker: fakerDE, name: 'Germany' },
+            'it': { faker: fakerIT, name: 'Italy' },
+            'es': { faker: fakerES, name: 'Spain' },
+            'ru': { faker: fakerRU, name: 'Russia' },
+            'ua': { faker: fakerUK, name: 'Ukraine' },
+            'pl': { faker: fakerPL, name: 'Poland' },
+            'nl': { faker: fakerNL, name: 'Netherlands' },
+            'pt': { faker: fakerPT_PT, name: 'Portugal' },
+            'se': { faker: fakerSV, name: 'Sweden' },
+            'fi': { faker: fakerFI, name: 'Finland' },
+            'cz': { faker: fakerCS_CZ, name: 'Czech Republic' },
+        };
+
+        const args = ctx.message.text.split(/\s+/);
+        let selectedFaker = fakerEN_US;
+        let selectedName = "United States";
+
+        // Logic Validasi:
+        if (args[1]) {
+            // Jika user memasukkan kode negara (contoh: /fake mars atau /fake id)
+            const inputCode = args[1].toLowerCase();
+            const selected = supportedLocales[inputCode];
+
+            if (selected) {
+                // Jika support
+                selectedFaker = selected.faker;
+                selectedName = selected.name;
+            } else {
+                // Jika TIDAK support (contoh: /fake mars)
+                return await ctx.reply("Belum support untuk identity ini");
+            }
+        } 
+        // Jika tidak ada argumen (/fake), lanjut menggunakan default US
+
+        // Generate Data
+        const sex = selectedFaker.person.sexType();
+        const firstName = selectedFaker.person.firstName(sex);
+        const lastName = selectedFaker.person.lastName();
+        const address = selectedFaker.location.streetAddress(true); 
+        const city = selectedFaker.location.city();
+        let state = "-";
+        try { state = selectedFaker.location.state(); } catch(e) {} // Handle optional state
+        const zip = selectedFaker.location.zipCode();
+        const phone = selectedFaker.phone.number();
+        const lat = selectedFaker.location.latitude();
+        const long = selectedFaker.location.longitude();
+
+        const message = 
+            `Full Name\t\`${firstName} ${lastName}\`\n` +
+            `Gender\t\`${sex}\`\n` +
+            `Full Address\t\`${address}\`\n` +
+            `City/Town\t\`${city}\`\n` +
+            `State/Province/Region\t\`${state}\`\n` +
+            `Zip/Postal Code\t\`${zip}\`\n` +
+            `Phone Number\t\`${phone}\`\n` +
+            `Country\t\`${selectedName}\`\n` + 
+            `Latitude\t\`${lat}\`\n` +
+            `Longitude\t\`${long}\``;
+
+        return await ctx.reply(message, { parse_mode: "Markdown" });
+    });
+
     const queryMail = async (ctx: TgContext, queryAddress: string, mailIndex: number, edit: boolean) => {
         const msgs = await getTgMessages(c, ctx);
         const userId = ctx?.message?.from?.id || ctx.callbackQuery?.message?.chat?.id;
@@ -389,7 +459,7 @@ export function newTelegramBot(c: Context<HonoCustomType>, token: string): Teleg
                 const code = totp.generate();
 
                 // Balas dengan format yang diminta
-                return await ctx.reply(`Kode OTP Anda adalah: \`${code}\``, {
+                return await ctx.reply(`Your OTP code is: \`${code}\``, {
                     parse_mode: "Markdown"
                 });
             } catch (e) {
@@ -398,7 +468,6 @@ export function newTelegramBot(c: Context<HonoCustomType>, token: string): Teleg
             }
         }
     });
-    // --- AKHIR FITUR BARU ---
 
     return bot;
 }
