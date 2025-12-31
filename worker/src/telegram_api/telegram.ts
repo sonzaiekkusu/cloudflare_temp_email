@@ -292,7 +292,6 @@ export function newTelegramBot(c: Context<HonoCustomType>, token: string): Teleg
     // --- FEATURE: GENERATE FAKE IDENTITY (WITH CREDIT CARD & BIN SUPPORT) ---
     bot.command("fake", async (ctx) => {
         // Supported Countries Configuration
-        // bin: Optional specific BIN for that country
         const supportedLocales: Record<string, { faker: Faker, name: string, bin?: string }> = {
             // Default / USA
             'us': { faker: fakerEN_US, name: 'United States' },
@@ -301,12 +300,12 @@ export function newTelegramBot(c: Context<HonoCustomType>, token: string): Teleg
             // --- ASIA ---
             'id': { faker: fakerID_ID, name: 'Indonesia' },
             'jp': { faker: fakerJA, name: 'Japan' },
-            'kr': { faker: fakerKO, name: 'South Korea', bin: '625814260' }, // Specific BIN for KR
+            'kr': { faker: fakerKO, name: 'South Korea', bin: '625814260' }, 
             'cn': { faker: fakerZH_CN, name: 'China' },
             'tw': { faker: fakerZH_TW, name: 'Taiwan' },
             'vn': { faker: fakerVI, name: 'Vietnam' },
             'th': { faker: fakerTH, name: 'Thailand' },
-            'in': { faker: fakerEN_IN, name: 'India', bin: '551827706' }, // Specific BIN for India
+            'in': { faker: fakerEN_IN, name: 'India', bin: '551827706' }, 
             'np': { faker: fakerNE, name: 'Nepal' },
             'tr': { faker: fakerTR, name: 'Turkey' },
 
@@ -334,31 +333,31 @@ export function newTelegramBot(c: Context<HonoCustomType>, token: string): Teleg
 
         // Validation Logic:
         if (args[1]) {
-            // If user enters a country code (e.g., /fake id or /fake mars)
             const inputCode = args[1].toLowerCase();
             const selected = supportedLocales[inputCode];
 
             if (selected) {
-                // Country supported
                 selectedFaker = selected.faker;
                 selectedName = selected.name;
                 specificBin = selected.bin;
             } else {
-                // Country NOT supported
                 return await ctx.reply("Unsupported identity for this country.");
             }
         } 
-        // If no argument (/fake), default to US
-
+        
         // --- Generate Identity Data ---
         const sex = selectedFaker.person.sexType();
         const firstName = selectedFaker.person.firstName(sex);
         const lastName = selectedFaker.person.lastName();
+        // Street Address (Street + Building Number), labeled as "Street"
         const address = selectedFaker.location.streetAddress(true); 
         const city = selectedFaker.location.city();
         let state = "-";
-        try { state = selectedFaker.location.state(); } catch(e) {} // Handle optional state
-        const zip = selectedFaker.location.zipCode();
+        try { state = selectedFaker.location.state(); } catch(e) {} 
+        
+        // Remove spaces from zip code
+        const zip = selectedFaker.location.zipCode().replace(/\s/g, '');
+        
         const phone = selectedFaker.phone.number();
         const lat = selectedFaker.location.latitude();
         const long = selectedFaker.location.longitude();
@@ -366,20 +365,16 @@ export function newTelegramBot(c: Context<HonoCustomType>, token: string): Teleg
         // --- Generate Credit Card Data ---
         let ccNumber: string;
         if (specificBin) {
-            // Generate valid CC from specific BIN using Luhn Algorithm
             ccNumber = generateLuhnCC(specificBin);
         } else {
-            // Generate random valid CC AND Remove non-digits (dashes/spaces)
             ccNumber = selectedFaker.finance.creditCardNumber().replace(/\D/g, '');
         }
 
-        // Expiry Date (Format: YY/MM)
+        // Expiry Date (Format: MM/YY)
         const expiryDate = selectedFaker.date.future({ years: 5 });
-        // Get last 2 digits of year (e.g. 2030 -> 30)
-        const yearStr = expiryDate.getFullYear().toString().slice(-2);
-        // Get month, add 1 (0-indexed), pad with 0 if single digit (e.g. 5 -> 05)
-        const monthStr = (expiryDate.getMonth() + 1).toString().padStart(2, '0');
-        const expiryFormatted = `${yearStr}/${monthStr}`;
+        const yearStr = expiryDate.getFullYear().toString().slice(-2); // Last 2 digits (e.g. 28)
+        const monthStr = (expiryDate.getMonth() + 1).toString().padStart(2, '0'); // Pad 0 (e.g. 05)
+        const expiryFormatted = `${monthStr}/${yearStr}`;
         
         // CVV
         const cvv = selectedFaker.finance.creditCardCVV();
@@ -387,7 +382,7 @@ export function newTelegramBot(c: Context<HonoCustomType>, token: string): Teleg
         const message = 
             `Full Name\t\`${firstName} ${lastName}\`\n` +
             `Gender\t\`${sex}\`\n` +
-            `Full Address\t\`${address}\`\n` +
+            `Street\t\`${address}\`\n` + // Label changed to Street
             `City/Town\t\`${city}\`\n` +
             `State/Province/Region\t\`${state}\`\n` +
             `Zip/Postal Code\t\`${zip}\`\n` +
