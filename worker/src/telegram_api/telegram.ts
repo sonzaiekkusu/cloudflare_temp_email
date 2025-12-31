@@ -20,7 +20,7 @@ const getTgMessages = async (
 ): Promise<LocaleMessages> => {
     // Check if user language config is enabled (default false)
     if (!getBooleanValue(c.env.TG_ALLOW_USER_LANG)) {
-        return i18n.getMessages(c.env.DEFAULT_LANG || 'zh');
+        return i18n.getMessages(c.env.DEFAULT_LANG || 'en');
     }
 
     const uid = userId || ctx?.message?.from?.id?.toString() || ctx?.callbackQuery?.from?.id?.toString();
@@ -28,46 +28,46 @@ const getTgMessages = async (
         const savedLang = await c.env.KV.get(`${CONSTANTS.TG_KV_PREFIX}:lang:${uid}`);
         if (savedLang) { return i18n.getMessages(savedLang); }
     }
-    return i18n.getMessages(c.env.DEFAULT_LANG || 'zh');
+    return i18n.getMessages(c.env.DEFAULT_LANG || 'en');
 };
 
 // Bilingual command descriptions with full usage instructions
 const COMMANDS = [
     {
         command: "start",
-        description: "开始使用 | Get started"
+        description: "Get started"
     },
     {
         command: "new",
-        description: "新建邮箱, /new <name>@<domain>, name[a-z0-9]有效, 为空随机生成, @domain可选 | Create address, /new <name>@<domain>, name[a-z0-9] valid, empty=random, @domain optional"
+        description: "Create address, /new <name>@<domain>, name[a-z0-9] valid, empty=random, @domain optional"
     },
     {
         command: "address",
-        description: "查看邮箱地址列表 | View address list"
+        description: "View address list"
     },
     {
         command: "bind",
-        description: "绑定邮箱, /bind <邮箱地址凭证> | Bind address, /bind <credential>"
+        description: "Bind address, /bind <credential>"
     },
     {
         command: "unbind",
-        description: "解绑邮箱, /unbind <邮箱地址> | Unbind address, /unbind <address>"
+        description: "Unbind address, /unbind <address>"
     },
     {
         command: "delete",
-        description: "删除邮箱, /delete <邮箱地址> | Delete address, /delete <address>"
+        description: "Delete address, /delete <address>"
     },
     {
         command: "mails",
-        description: "查看邮件, /mails <邮箱地址>, 不输入地址默认第一个 | View mails, /mails <address>, default first if empty"
+        description: "View mails, /mails <address>, default first if empty"
     },
     {
         command: "cleaninvalidaddress",
-        description: "清理无效地址 | Clean invalid addresses"
+        description: "Clean invalid addresses"
     },
     {
         command: "lang",
-        description: "设置语言 /lang <zh|en> | Set language /lang <zh|en>"
+        description: "Set language"
     },
 ]
 
@@ -266,14 +266,14 @@ export function newTelegramBot(c: Context<HonoCustomType>, token: string): Teleg
         const lang = ctx?.message?.text.slice("/lang".length).trim().toLowerCase();
         if (lang === 'zh' || lang === 'en') {
             await c.env.KV.put(`${CONSTANTS.TG_KV_PREFIX}:lang:${userId}`, lang);
-            return await ctx.reply(`${msgs.TgLangSetSuccessMsg} ${lang === 'zh' ? '中文' : 'English'}`);
+            return await ctx.reply(`${msgs.TgLangSetSuccessMsg} ${lang === 'zh' ? 'Chinese' : 'English'}`);
         }
 
         const currentLang = await c.env.KV.get(`${CONSTANTS.TG_KV_PREFIX}:lang:${userId}`);
         return await ctx.reply(
             `${msgs.TgCurrentLangMsg} ${currentLang || 'auto'}\n`
             + `${msgs.TgSelectLangMsg}\n`
-            + `/lang zh - 中文\n`
+            + `/lang zh - Chinese\n`
             + `/lang en - English`
         );
     });
@@ -437,7 +437,7 @@ export async function sendMailToTelegram(
     };
 
     if (globalPush) {
-        const globalMsgs = i18n.getMessages(c.env.DEFAULT_LANG || 'zh');
+        const globalMsgs = i18n.getMessages(c.env.DEFAULT_LANG || 'en');
         for (const pushId of settings.globalMailPushList) {
             await buildAndSend(pushId, globalMsgs);
         }
